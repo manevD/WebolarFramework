@@ -1,43 +1,40 @@
-﻿using System.Globalization;
-using System;
+﻿using System;
+using System.Globalization;
 using System.IO;
-using System.Windows.Media.Imaging;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
 
-namespace Webolar.Framework
+namespace Webolar.Framework;
+
+public class ByteArrayToBitmapImageConverter : IValueConverter
 {
-    public class ByteArrayToBitmapImageConverter : IValueConverter
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        var img = new BitmapImage();
+        if (value != null) img = ConvertByteArrayToBitMapImage(value as byte[]);
+        return img;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return null;
+    }
+
+    public BitmapImage ConvertByteArrayToBitMapImage(byte[] imageByteArray)
+    {
+        var img = new BitmapImage();
+        using (var memStream = new MemoryStream(imageByteArray))
         {
-            BitmapImage img = new BitmapImage();
-            if (value != null)
-            {
-                img = this.ConvertByteArrayToBitMapImage(value as byte[]);
-            }
-            return img;
+            memStream.Position = 0;
+            img.BeginInit();
+            img.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+            img.CacheOption = BitmapCacheOption.OnLoad;
+            img.UriSource = null;
+            img.StreamSource = memStream;
+            img.EndInit();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-
-        public BitmapImage ConvertByteArrayToBitMapImage(byte[] imageByteArray)
-        {
-            BitmapImage img = new BitmapImage();
-            using (MemoryStream memStream = new MemoryStream(imageByteArray))
-            {
-                memStream.Position = 0;
-                img.BeginInit();
-                img.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-                img.CacheOption = BitmapCacheOption.OnLoad;
-                img.UriSource = null;
-                img.StreamSource = memStream;
-                img.EndInit();
-            }
-            img.Freeze();
-            return img;
-        }
+        img.Freeze();
+        return img;
     }
 }

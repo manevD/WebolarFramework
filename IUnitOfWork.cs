@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace Webolar.Framework
+namespace Webolar.Framework;
+
+public interface IUnitOfWork<TEntity> : IDisposable where TEntity : class
 {
-    public interface IUnitOfWork<TEntity> : IDisposable where TEntity : class
-    {
-    }
 }
