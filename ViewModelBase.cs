@@ -34,9 +34,4 @@ public class ViewModelBase : INotifyPropertyChanged
     {
         return true;
     }
-
-    public virtual bool CanExecute()
-    {
-        return true;
-    }
 }
